@@ -1,3 +1,46 @@
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local wasInTrade = false
+local currentTradePartner = ""
+
+local function checkTrade()
+    local gui = player.PlayerGui:FindFirstChild("Main")
+    if not gui then return false, "" end
+    
+    local trade = gui:FindFirstChild("Trade")
+    if not trade or not trade.Visible then return false, "" end
+    
+    local container = trade:FindFirstChild("Container")
+    if container then
+        local frame1 = container:FindFirstChild("1")
+        local frame2 = container:FindFirstChild("2")
+        if frame1 and frame2 then
+            local label1 = frame1:FindFirstChild("TextLabel")
+            local label2 = frame2:FindFirstChild("TextLabel")
+            if label1 and label2 then
+                if label1.Text == player.Name then
+                    return true, label2.Text
+                elseif label2.Text == player.Name then
+                    return true, label1.Text
+                else
+                    return true, label1.Text == player.DisplayName and label2.Text or label1.Text
+                end
+            end
+        end
+    end
+    return false, ""
+end
+
+-- Window
+local Window = WindUI:CreateWindow({
+    Title = "Adopt me | Trade Script v1",
+    Author = "Create by: lloydaxelle",
+    Icon = "user",
+    Size = UDim2.fromOffset(350, 200)
+})
+
 local MainTab = Window:Tab({Title = "Trade", Icon = "repeat"})
 
 -- Button 1: Freeze Player
