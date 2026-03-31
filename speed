@@ -1,0 +1,72 @@
+-- Load Rayfield
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "SpeedGlitch Hub",
+    LoadingTitle = "Loading...",
+    LoadingSubtitle = "by vixqll.",
+    ConfigurationSaving = {
+        Enabled = false
+    }
+})
+
+local Tab = Window:CreateTab("Main", 4483362458)
+
+-- Services
+local RunService = game:GetService("RunService")
+local Player = game.Players.LocalPlayer
+
+-- Character setup
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local Humanoid = Character:WaitForChild("Humanoid")
+local RootPart = Character:WaitForChild("HumanoidRootPart")
+
+-- Values
+local speed = 50
+local enabled = false
+
+-- Core function
+local function speedGlitch()
+    if enabled and Humanoid.FloorMaterial == Enum.Material.Air then
+        local moveDir = Humanoid.MoveDirection
+
+        if moveDir.Magnitude > 0 then
+            local vel = RootPart.Velocity
+            local newVel = Vector3.new(moveDir.X * speed, vel.Y, moveDir.Z * speed)
+
+            RootPart.Velocity = newVel
+            RootPart.AssemblyLinearVelocity = newVel
+        end
+    end
+end
+
+-- Loop
+RunService.Heartbeat:Connect(speedGlitch)
+
+-- Reconnect on respawn
+Player.CharacterAdded:Connect(function(char)
+    Character = char
+    Humanoid = char:WaitForChild("Humanoid")
+    RootPart = char:WaitForChild("HumanoidRootPart")
+end)
+
+-- UI Toggle
+Tab:CreateToggle({
+    Name = "Speed Glitch",
+    CurrentValue = false,
+    Callback = function(value)
+        enabled = value
+    end,
+})
+
+-- UI Slider
+Tab:CreateSlider({
+    Name = "Speed",
+    Range = {10, 200},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 50,
+    Callback = function(value)
+        speed = value
+    end,
+})
